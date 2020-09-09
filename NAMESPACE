@@ -2,3 +2,4 @@
 
 export(grab_coefs)
 export(grab_resids)
+export(linear_model)
