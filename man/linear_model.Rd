@@ -4,12 +4,12 @@
 \alias{linear_model}
 \title{Create linear model}
 \usage{
-linear_model(formula, df, contrasts = NULL)
+linear_model(f, d, contrasts = NULL)
 }
 \arguments{
-\item{formula}{the model to which data will be fit}
+\item{f}{the model to which data will be fit (a formula)}
 
-\item{df}{the data frame containing data to be fit}
+\item{d}{the data frame containing data to be fit (a data frame)}
 
 \item{contrasts}{a list of variable names to be used as factor variables}
 }
@@ -23,5 +23,5 @@ data("penguins")
 penguinsform <- bill_length_mm ~ body_mass_g
 penguinsdf <- (as.data.frame(penguins))
 penguinscont <- list(Species = "contr.sum")
-linear_model(penguinsform, df=penguinsdf, contrasts=penguinscont)
+linear_model(penguinsform, d=penguinsdf, contrasts=penguinscont)
 }
