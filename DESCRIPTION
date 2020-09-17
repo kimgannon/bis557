@@ -21,7 +21,8 @@ Suggests:
     ggplot2,
     DT,
     dplyr,
-    jsonlite
+    jsonlite,
+    covr
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
