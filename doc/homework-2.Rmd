@@ -1,0 +1,250 @@
+---
+title: "Homework 2 vignette"
+author: "Kim Gannon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Homework 2 vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+This vignette contains the answers from BIS 557 HW2.
+
+# Problem 1
+
+### Consider the simple regression model with only a scalar $x$ and an intercept
+
+### $$y=\beta_0+\beta_1\cdot x$$
+
+### Using the explicit formula for the inverse of a 2 by 2 matrix, write down the least squares estimators for $\hat{\beta_0}$ and $\hat{\beta_1}$.
+
+
+Let $X$ be the following 1 by p matrix:
+$$ \begin{bmatrix} x_{1,1} & x_{1,2} \\ x_{2,1} & x_{2,2}\\ ... & ... \\ x_{1,n} & x_{2,n} \end{bmatrix} $$
+Then, we can obtain $X^TX$:
+
+$$\begin{bmatrix}
+\Sigma_{i=1}^n x_{i,1}^2 & \Sigma_{i=1}^n x_{i,1}x_{i,2}\\
+\Sigma_{i=1}^n x_{i,2}x_{i,1} &
+\Sigma_{i=1}^n x_{i,2}^2
+\end{bmatrix}$$
+
+Call the elements of this matrix $a,b,c,d$ respectively, as follows. We will back substitute later:
+$$ \begin{bmatrix}
+a & b\\
+c & d
+\end{bmatrix} $$
+
+Then, we invert:
+
+$$ (X^TX)^{-1} = \frac{1}{ad-bc}\begin{bmatrix} d & -b\\-c & a \end{bmatrix} $$
+
+Then we multiply by $X^Ty$:
+$$ \begin{bmatrix}
+\frac{d}{ad-bc} & \frac{-b}{ad-bc}\\
+\frac{-c}{ad-bc} & \frac{a}{ad-bc}
+\end{bmatrix}  \cdot
+\begin{bmatrix}
+\sum_{i=1}^n x_{1,i}y_{i}\\
+\sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} $$
+
+$$ \begin{bmatrix}
+\frac{d-b}{ad-bc}\cdot \sum_{i=1}^n x_{1,i}y_{i}\\
+\frac{a-c}{ad-bc}\cdot \sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} $$
+Back-substituting, we find
+$$ \begin{bmatrix}
+\hat{\beta_1} \\ \hat{\beta_2}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{\Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2}}{\Sigma_{i=1}^n x_{i,1}^2 \cdot \Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2}\cdot \Sigma_{i=1}^n x_{i,2}x_{i,1}}\cdot \sum_{i=1}^n x_{1,i}y_{i}\\
+\frac{\Sigma_{i=1}^n x_{i,1}^2-\Sigma_{i=1}^n x_{i,2}x_{i,1}}{\Sigma_{i=1}^n x_{i,1}^2\cdot \Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2} \cdot \Sigma_{i=1}^n x_{i,2}x_{i,1}}\cdot \sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} $$
+
+# Problem 2
+### Implement a new function fitting the OLS model using gradient descent that calculates the penalty based on the out-of-sample accuracy. Create test code. How does it compare to the OLS model?
+
+This problem is solved in the lm_graddescent_xval function, with accompanying test code. Now, we compare the output for this function with a similar cross-validation for lm, using the iris dataset and the formula Sepal.Length~. :
+
+```{r}
+  library(bis557)
+  library(tibble)
+  library(foreach)
+  library(rsample)
+  library(stats)
+
+  irisform <- Sepal.Length~.
+  folds <- rsample::vfold_cv(iris)
+  os_resid_gd <- lm_graddescent_xval(irisform, iris, 0.0001, 100000, flds=folds)
+
+
+  #lm resids
+  Y <- as.character(irisform)[2]
+  os_resids_lm <- foreach::`%do%`(
+    foreach::foreach(fold = folds$splits, .combine = c)
+  , {
+    #these two lines below will give us the loss from each fold
+    fit <- stats::lm(irisform, rsample::analysis(fold))
+    as.vector(matrix(rsample::assessment(fold)[,Y],ncol=1)) -
+                as.vector(
+                  stats::predict(fit, rsample::assessment(fold)))
+    
+  } )
+  difference <- os_resid_gd - os_resids_lm
+  df <- cbind.data.frame(os_resid_gd, os_resids_lm, difference)
+  tibble::as.tibble(df)
+  
+```
+
+One can easily see from this tibble that the residuals, on average, are very close to equal on all iterations, which we expect.
+
+# Problem 3
+### Implement a ridge regression function taking into account colinear (or nearly colinear) regression variables. Create test code for it. Show that it works.
+
+We answer this question with the function my_ridge.R. We account for singular or near-singular values both with the use of SVD and including the parameter lambda=0.02. To show that this works, we run a similar cross-validation algorithm as above and compare out-of-sample accuracy to the standard lm function.
+
+```{r}
+  library(bis557)
+  library(tibble)
+  library(foreach)
+  library(rsample)
+  library(stats)
+
+  data("iris")
+  irisform <- Sepal.Length~.
+  folds <- rsample::vfold_cv(iris)
+  
+  #ridge resids for low lambda (lambda = 0.02)
+  os_resids_ridge <- foreach::`%do%`(
+    foreach::foreach(fold = folds$splits, .combine = c)
+  , {
+    fit <- bis557::my_ridge(irisform, rsample::analysis(fold), lambda = 0.02)
+    as.vector(matrix(rsample::assessment(fold)[,Y],ncol=1)) -
+                as.vector(
+                  bis557::predict_ridge(fit, rsample::assessment(fold)))
+    
+  } )
+  
+  
+  #lm resids
+  Y <- as.character(irisform)[2]
+  os_resids_lm <- foreach::`%do%`(
+    foreach::foreach(fold = folds$splits, .combine = c)
+  , {
+    #these two lines below will give us the loss from each fold
+    fit <- stats::lm(irisform, rsample::analysis(fold))
+    as.vector(matrix(rsample::assessment(fold)[,Y],ncol=1)) -
+                as.vector(
+                  stats::predict(fit, rsample::assessment(fold)))
+    
+  } )
+  
+  #get difference, compare in tibble
+  difference <- os_resids_ridge - os_resids_lm
+  df <- cbind.data.frame(os_resid_gd, os_resids_lm, difference)
+  tibble::as.tibble(df)
+
+
+```
+# Problem 4
+### Implement your own method and testing for optimizing the ridge parameter $\lambda$. Show that it works in your homework-2 vignette
+
+This problem is solved in the function my_ridge_xval.R
+
+In this function, I choose $\lambda$ that minimizes the average mean squared residuals across ten-fold cross validations. Below I demonstrate its effectiveness in an example.
+
+```{r}
+  library(bis557)
+  library(tibble)
+  library(foreach)
+  library(rsample)
+  library(stats)
+
+data("iris")
+dta <- iris
+irisform <- Sepal.Length~.
+folds <- rsample::vfold_cv(iris)
+lambdas <- seq(0, 100, by = 0.1)
+predicted <- my_ridge_xval(irisform,dta,lambdas,folds)
+
+#Now I will plot several values of lambda and find the mean squared loss
+
+Y <- as.character(irisform)[2]
+    meansq_vec <-
+      foreach::`%do%`(foreach::foreach(i = seq_along(lambdas), .combine = c),
+                                  {foreach::`%do%`(
+        foreach::foreach(fold = folds$splits, .combine = c)
+        , {
+          #these two lines below will give us the loss from each fold at lambda_i
+          fit <- bis557::my_ridge(irisform, rsample::analysis(fold),lambdas[i])
+          difference <- as.vector(matrix(rsample::assessment(fold)[,Y],ncol=1)) -
+            as.vector(
+              bis557::predict_ridge(fit, rsample::assessment(fold)))
+    })
+    diffsq <- difference^2
+    mean(diffsq)
+  })
+    
+
+candidates <- cbind.data.frame(lambdas,meansq_vec)
+plot(candidates)
+
+predicted
+
+```
+One can clearly see that the lambda that minimizes mean squared error in this plot is similar to the one predicted by the function.
+
+# Problem 5
+### Consider the LASSO penalty
+$$
+\frac{1}{2n} ||Y - X \beta||_2^2 + \lambda ||\beta||_1.
+$$
+
+### Show that if $|X_j^TY| \leq n \lambda$, then $\widehat \beta^{\text{LASSO}}$ must be zero.
+
+I will prove this by contradiction. Suppose $|X_j^TY| \leq n \lambda$ and $\hat{\beta_j}^{LASSO} \neq 0$. We know $\lambda > 0$ by definition of the LASSO penalty.
+First, we consider the $j$th element of the gradient of the LASSO penalty:
+$$
+\frac{1}{n}(\beta_j-X^T_jY) + \{\nabla \lambda||\beta|| \}_j
+= \frac{1}{n}\beta_j - \frac{1}{n}X^T_jy \pm \lambda
+$$
+
+Thus we can write the first order condition for $\hat{\beta}_j^{LASSO}$ as follows:
+
+$$
+\frac{1}{n}\hat{\beta_j}^{LASSO}-\frac{1}{n}X^T_jy \pm \lambda = 0
+$$
+
+Consider two cases:
+1. $\hat{\beta}_j^{LASSO} > 0$: Then, we have the following first-order condition:
+$$
+\frac{1}{n}\hat{\beta_j}^{LASSO}- \frac{1}{n}X^T_jy + \lambda = 0
+$$
+So
+$$
+\hat{\beta_j}^{LASSO} = X^T_jy - n \lambda 
+$$
+Since $X^T_jY \leq n\lambda$, the right hand side of this equation must be less than or equal to zero. Since in this case we are forcing $\beta_j$ to be strictly greater than zero, we reach a contradiction.
+
+2. $\hat{\beta}_j^{LASSO} < 0$: Then, we have the following first-order condition:
+$$
+\frac{1}{n}\hat{\beta_j}^{LASSO} - \frac{1}{n}X^T_jy - \lambda = 0
+$$
+So
+$$
+\hat{\beta_j}^{LASSO} = X^T_jy + n \lambda 
+$$
+Since $X^T_jY \leq n\lambda$, the right hand side of this equation must be greater than or equal to zero. Since in this case we are forcing $\beta_j$ to be strictly less than zero, we reach a contradiction.
+
+With cases 1 and 2 taken together, we force $\hat{\beta_j}^{LASSO}=0.$

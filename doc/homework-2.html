@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Kim Gannon" />
+
+<meta name="date" content="2020-10-06" />
+
+<title>Homework 2 vignette</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Homework 2 vignette</h1>
+<h4 class="author">Kim Gannon</h4>
+<h4 class="date">2020-10-06</h4>
+
+
+
+<p>This vignette contains the answers from BIS 557 HW2.</p>
+<div id="problem-1" class="section level1">
+<h1>Problem 1</h1>
+<div id="consider-the-simple-regression-model-with-only-a-scalar-x-and-an-intercept" class="section level3">
+<h3>Consider the simple regression model with only a scalar <span class="math inline">\(x\)</span> and an intercept</h3>
+</div>
+<div id="ybeta_0beta_1cdot-x" class="section level3">
+<h3><span class="math display">\[y=\beta_0+\beta_1\cdot x\]</span></h3>
+</div>
+<div id="using-the-explicit-formula-for-the-inverse-of-a-2-by-2-matrix-write-down-the-least-squares-estimators-for-hatbeta_0-and-hatbeta_1." class="section level3">
+<h3>Using the explicit formula for the inverse of a 2 by 2 matrix, write down the least squares estimators for <span class="math inline">\(\hat{\beta_0}\)</span> and <span class="math inline">\(\hat{\beta_1}\)</span>.</h3>
+<p>Let <span class="math inline">\(X\)</span> be the following 1 by p matrix: <span class="math display">\[ \begin{bmatrix} x_{1,1} &amp; x_{1,2} \\ x_{2,1} &amp; x_{2,2}\\ ... &amp; ... \\ x_{1,n} &amp; x_{2,n} \end{bmatrix} \]</span> Then, we can obtain <span class="math inline">\(X^TX\)</span>:</p>
+<p><span class="math display">\[\begin{bmatrix}
+\Sigma_{i=1}^n x_{i,1}^2 &amp; \Sigma_{i=1}^n x_{i,1}x_{i,2}\\
+\Sigma_{i=1}^n x_{i,2}x_{i,1} &amp;
+\Sigma_{i=1}^n x_{i,2}^2
+\end{bmatrix}\]</span></p>
+<p>Call the elements of this matrix <span class="math inline">\(a,b,c,d\)</span> respectively, as follows. We will back substitute later: <span class="math display">\[ \begin{bmatrix}
+a &amp; b\\
+c &amp; d
+\end{bmatrix} \]</span></p>
+<p>Then, we invert:</p>
+<p><span class="math display">\[ (X^TX)^{-1} = \frac{1}{ad-bc}\begin{bmatrix} d &amp; -b\\-c &amp; a \end{bmatrix} \]</span></p>
+<p>Then we multiply by <span class="math inline">\(X^Ty\)</span>: <span class="math display">\[ \begin{bmatrix}
+\frac{d}{ad-bc} &amp; \frac{-b}{ad-bc}\\
+\frac{-c}{ad-bc} &amp; \frac{a}{ad-bc}
+\end{bmatrix}  \cdot
+\begin{bmatrix}
+\sum_{i=1}^n x_{1,i}y_{i}\\
+\sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} \]</span></p>
+<p><span class="math display">\[ \begin{bmatrix}
+\frac{d-b}{ad-bc}\cdot \sum_{i=1}^n x_{1,i}y_{i}\\
+\frac{a-c}{ad-bc}\cdot \sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} \]</span> Back-substituting, we find <span class="math display">\[ \begin{bmatrix}
+\hat{\beta_1} \\ \hat{\beta_2}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{\Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2}}{\Sigma_{i=1}^n x_{i,1}^2 \cdot \Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2}\cdot \Sigma_{i=1}^n x_{i,2}x_{i,1}}\cdot \sum_{i=1}^n x_{1,i}y_{i}\\
+\frac{\Sigma_{i=1}^n x_{i,1}^2-\Sigma_{i=1}^n x_{i,2}x_{i,1}}{\Sigma_{i=1}^n x_{i,1}^2\cdot \Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2} \cdot \Sigma_{i=1}^n x_{i,2}x_{i,1}}\cdot \sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} \]</span></p>
+</div>
+</div>
+<div id="problem-2" class="section level1">
+<h1>Problem 2</h1>
+<div id="implement-a-new-function-fitting-the-ols-model-using-gradient-descent-that-calculates-the-penalty-based-on-the-out-of-sample-accuracy.-create-test-code.-how-does-it-compare-to-the-ols-model" class="section level3">
+<h3>Implement a new function fitting the OLS model using gradient descent that calculates the penalty based on the out-of-sample accuracy. Create test code. How does it compare to the OLS model?</h3>
+<p>This problem is solved in the lm_graddescent_xval function, with accompanying test code. Now, we compare the output for this function with a similar cross-validation for lm, using the iris dataset and the formula Sepal.Length~. :</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>  <span class="kw">library</span>(bis557)</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="kw">library</span>(tibble)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  <span class="kw">library</span>(foreach)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="kw">library</span>(rsample)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="kw">library</span>(stats)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a>  irisform &lt;-<span class="st"> </span>Sepal.Length<span class="op">~</span>.</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  folds &lt;-<span class="st"> </span>rsample<span class="op">::</span><span class="kw">vfold_cv</span>(iris)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>  os_resid_gd &lt;-<span class="st"> </span><span class="kw">lm_graddescent_xval</span>(irisform, iris, <span class="fl">0.0001</span>, <span class="dv">100000</span>, <span class="dt">flds=</span>folds)</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a>  <span class="co">#lm resids</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>  Y &lt;-<span class="st"> </span><span class="kw">as.character</span>(irisform)[<span class="dv">2</span>]</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  os_resids_lm &lt;-<span class="st"> </span>foreach<span class="op">::</span><span class="st">`</span><span class="dt">%do%</span><span class="st">`</span>(</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    foreach<span class="op">::</span><span class="kw">foreach</span>(<span class="dt">fold =</span> folds<span class="op">$</span>splits, <span class="dt">.combine =</span> c)</span>
+<span id="cb1-16"><a href="#cb1-16"></a>  , {</span>
+<span id="cb1-17"><a href="#cb1-17"></a>    <span class="co">#these two lines below will give us the loss from each fold</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a>    fit &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw">lm</span>(irisform, rsample<span class="op">::</span><span class="kw">analysis</span>(fold))</span>
+<span id="cb1-19"><a href="#cb1-19"></a>    <span class="kw">as.vector</span>(<span class="kw">matrix</span>(rsample<span class="op">::</span><span class="kw">assessment</span>(fold)[,Y],<span class="dt">ncol=</span><span class="dv">1</span>)) <span class="op">-</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="st">                </span><span class="kw">as.vector</span>(</span>
+<span id="cb1-21"><a href="#cb1-21"></a>                  stats<span class="op">::</span><span class="kw">predict</span>(fit, rsample<span class="op">::</span><span class="kw">assessment</span>(fold)))</span>
+<span id="cb1-22"><a href="#cb1-22"></a>    </span>
+<span id="cb1-23"><a href="#cb1-23"></a>  } )</span>
+<span id="cb1-24"><a href="#cb1-24"></a>  difference &lt;-<span class="st"> </span>os_resid_gd <span class="op">-</span><span class="st"> </span>os_resids_lm</span>
+<span id="cb1-25"><a href="#cb1-25"></a>  df &lt;-<span class="st"> </span><span class="kw">cbind.data.frame</span>(os_resid_gd, os_resids_lm, difference)</span>
+<span id="cb1-26"><a href="#cb1-26"></a>  tibble<span class="op">::</span><span class="kw">as.tibble</span>(df)</span>
+<span id="cb1-27"><a href="#cb1-27"></a><span class="co">#&gt; Warning: `as.tibble()` is deprecated as of tibble 2.0.0.</span></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="co">#&gt; Please use `as_tibble()` instead.</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a><span class="co">#&gt; The signature and semantics have changed, see `?as_tibble`.</span></span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a><span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span></span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="co">#&gt; # A tibble: 150 x 3</span></span>
+<span id="cb1-33"><a href="#cb1-33"></a><span class="co">#&gt;    os_resid_gd os_resids_lm  difference</span></span>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="co">#&gt;          &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb1-35"><a href="#cb1-35"></a><span class="co">#&gt;  1     -0.0750      -0.0750  0.00000950</span></span>
+<span id="cb1-36"><a href="#cb1-36"></a><span class="co">#&gt;  2     -0.0390      -0.0390  0.00000432</span></span>
+<span id="cb1-37"><a href="#cb1-37"></a><span class="co">#&gt;  3     -0.320       -0.320   0.00000697</span></span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="co">#&gt;  4      0.326        0.326  -0.00000338</span></span>
+<span id="cb1-39"><a href="#cb1-39"></a><span class="co">#&gt;  5      0.316        0.316  -0.00000186</span></span>
+<span id="cb1-40"><a href="#cb1-40"></a><span class="co">#&gt;  6     -0.0678      -0.0678 -0.0000285 </span></span>
+<span id="cb1-41"><a href="#cb1-41"></a><span class="co">#&gt;  7     -0.545       -0.545   0.0000275 </span></span>
+<span id="cb1-42"><a href="#cb1-42"></a><span class="co">#&gt;  8      0.434        0.434   0.0000166 </span></span>
+<span id="cb1-43"><a href="#cb1-43"></a><span class="co">#&gt;  9     -0.0142      -0.0141 -0.0000288 </span></span>
+<span id="cb1-44"><a href="#cb1-44"></a><span class="co">#&gt; 10      0.102        0.102   0.00000898</span></span>
+<span id="cb1-45"><a href="#cb1-45"></a><span class="co">#&gt; # ... with 140 more rows</span></span></code></pre></div>
+<p>One can easily see from this tibble that the residuals, on average, are very close to equal on all iterations, which we expect.</p>
+</div>
+</div>
+<div id="problem-3" class="section level1">
+<h1>Problem 3</h1>
+<div id="implement-a-ridge-regression-function-taking-into-account-colinear-or-nearly-colinear-regression-variables.-create-test-code-for-it.-show-that-it-works." class="section level3">
+<h3>Implement a ridge regression function taking into account colinear (or nearly colinear) regression variables. Create test code for it. Show that it works.</h3>
+<p>We answer this question with the function my_ridge.R. We account for singular or near-singular values both with the use of SVD and including the parameter lambda=0.02. To show that this works, we run a similar cross-validation algorithm as above and compare out-of-sample accuracy to the standard lm function.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>  <span class="kw">library</span>(bis557)</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="kw">library</span>(tibble)</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="kw">library</span>(foreach)</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="kw">library</span>(rsample)</span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="kw">library</span>(stats)</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="kw">data</span>(<span class="st">&quot;iris&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8"></a>  irisform &lt;-<span class="st"> </span>Sepal.Length<span class="op">~</span>.</span>
+<span id="cb2-9"><a href="#cb2-9"></a>  folds &lt;-<span class="st"> </span>rsample<span class="op">::</span><span class="kw">vfold_cv</span>(iris)</span>
+<span id="cb2-10"><a href="#cb2-10"></a>  </span>
+<span id="cb2-11"><a href="#cb2-11"></a>  <span class="co">#ridge resids for low lambda (lambda = 0.02)</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>  os_resids_ridge &lt;-<span class="st"> </span>foreach<span class="op">::</span><span class="st">`</span><span class="dt">%do%</span><span class="st">`</span>(</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    foreach<span class="op">::</span><span class="kw">foreach</span>(<span class="dt">fold =</span> folds<span class="op">$</span>splits, <span class="dt">.combine =</span> c)</span>
+<span id="cb2-14"><a href="#cb2-14"></a>  , {</span>
+<span id="cb2-15"><a href="#cb2-15"></a>    fit &lt;-<span class="st"> </span>bis557<span class="op">::</span><span class="kw">my_ridge</span>(irisform, rsample<span class="op">::</span><span class="kw">analysis</span>(fold), <span class="dt">lambda =</span> <span class="fl">0.02</span>)</span>
+<span id="cb2-16"><a href="#cb2-16"></a>    <span class="kw">as.vector</span>(<span class="kw">matrix</span>(rsample<span class="op">::</span><span class="kw">assessment</span>(fold)[,Y],<span class="dt">ncol=</span><span class="dv">1</span>)) <span class="op">-</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="st">                </span><span class="kw">as.vector</span>(</span>
+<span id="cb2-18"><a href="#cb2-18"></a>                  bis557<span class="op">::</span><span class="kw">predict_ridge</span>(fit, rsample<span class="op">::</span><span class="kw">assessment</span>(fold)))</span>
+<span id="cb2-19"><a href="#cb2-19"></a>    </span>
+<span id="cb2-20"><a href="#cb2-20"></a>  } )</span>
+<span id="cb2-21"><a href="#cb2-21"></a>  </span>
+<span id="cb2-22"><a href="#cb2-22"></a>  </span>
+<span id="cb2-23"><a href="#cb2-23"></a>  <span class="co">#lm resids</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a>  Y &lt;-<span class="st"> </span><span class="kw">as.character</span>(irisform)[<span class="dv">2</span>]</span>
+<span id="cb2-25"><a href="#cb2-25"></a>  os_resids_lm &lt;-<span class="st"> </span>foreach<span class="op">::</span><span class="st">`</span><span class="dt">%do%</span><span class="st">`</span>(</span>
+<span id="cb2-26"><a href="#cb2-26"></a>    foreach<span class="op">::</span><span class="kw">foreach</span>(<span class="dt">fold =</span> folds<span class="op">$</span>splits, <span class="dt">.combine =</span> c)</span>
+<span id="cb2-27"><a href="#cb2-27"></a>  , {</span>
+<span id="cb2-28"><a href="#cb2-28"></a>    <span class="co">#these two lines below will give us the loss from each fold</span></span>
+<span id="cb2-29"><a href="#cb2-29"></a>    fit &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw">lm</span>(irisform, rsample<span class="op">::</span><span class="kw">analysis</span>(fold))</span>
+<span id="cb2-30"><a href="#cb2-30"></a>    <span class="kw">as.vector</span>(<span class="kw">matrix</span>(rsample<span class="op">::</span><span class="kw">assessment</span>(fold)[,Y],<span class="dt">ncol=</span><span class="dv">1</span>)) <span class="op">-</span></span>
+<span id="cb2-31"><a href="#cb2-31"></a><span class="st">                </span><span class="kw">as.vector</span>(</span>
+<span id="cb2-32"><a href="#cb2-32"></a>                  stats<span class="op">::</span><span class="kw">predict</span>(fit, rsample<span class="op">::</span><span class="kw">assessment</span>(fold)))</span>
+<span id="cb2-33"><a href="#cb2-33"></a>    </span>
+<span id="cb2-34"><a href="#cb2-34"></a>  } )</span>
+<span id="cb2-35"><a href="#cb2-35"></a>  </span>
+<span id="cb2-36"><a href="#cb2-36"></a>  <span class="co">#get difference, compare in tibble</span></span>
+<span id="cb2-37"><a href="#cb2-37"></a>  difference &lt;-<span class="st"> </span>os_resids_ridge <span class="op">-</span><span class="st"> </span>os_resids_lm</span>
+<span id="cb2-38"><a href="#cb2-38"></a>  df &lt;-<span class="st"> </span><span class="kw">cbind.data.frame</span>(os_resid_gd, os_resids_lm, difference)</span>
+<span id="cb2-39"><a href="#cb2-39"></a>  tibble<span class="op">::</span><span class="kw">as.tibble</span>(df)</span>
+<span id="cb2-40"><a href="#cb2-40"></a><span class="co">#&gt; # A tibble: 150 x 3</span></span>
+<span id="cb2-41"><a href="#cb2-41"></a><span class="co">#&gt;    os_resid_gd os_resids_lm difference</span></span>
+<span id="cb2-42"><a href="#cb2-42"></a><span class="co">#&gt;          &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb2-43"><a href="#cb2-43"></a><span class="co">#&gt;  1     -0.0750      -0.0315   0.00489 </span></span>
+<span id="cb2-44"><a href="#cb2-44"></a><span class="co">#&gt;  2     -0.0390      -0.330    0.00210 </span></span>
+<span id="cb2-45"><a href="#cb2-45"></a><span class="co">#&gt;  3     -0.320        0.302   -0.00130 </span></span>
+<span id="cb2-46"><a href="#cb2-46"></a><span class="co">#&gt;  4      0.326       -0.0851  -0.00444 </span></span>
+<span id="cb2-47"><a href="#cb2-47"></a><span class="co">#&gt;  5      0.316        0.453   -0.00244 </span></span>
+<span id="cb2-48"><a href="#cb2-48"></a><span class="co">#&gt;  6     -0.0678      -0.332   -0.00510 </span></span>
+<span id="cb2-49"><a href="#cb2-49"></a><span class="co">#&gt;  7     -0.545       -0.100    0.00200 </span></span>
+<span id="cb2-50"><a href="#cb2-50"></a><span class="co">#&gt;  8      0.434       -0.266   -0.000107</span></span>
+<span id="cb2-51"><a href="#cb2-51"></a><span class="co">#&gt;  9     -0.0142      -0.265   -0.00313 </span></span>
+<span id="cb2-52"><a href="#cb2-52"></a><span class="co">#&gt; 10      0.102        0.253   -0.00455 </span></span>
+<span id="cb2-53"><a href="#cb2-53"></a><span class="co">#&gt; # ... with 140 more rows</span></span></code></pre></div>
+</div>
+</div>
+<div id="problem-4" class="section level1">
+<h1>Problem 4</h1>
+<div id="implement-your-own-method-and-testing-for-optimizing-the-ridge-parameter-lambda.-show-that-it-works-in-your-homework-2-vignette" class="section level3">
+<h3>Implement your own method and testing for optimizing the ridge parameter <span class="math inline">\(\lambda\)</span>. Show that it works in your homework-2 vignette</h3>
+<p>This problem is solved in the function my_ridge_xval.R</p>
+<p>In this function, I choose <span class="math inline">\(\lambda\)</span> that minimizes the average mean squared residuals across ten-fold cross validations. Below I demonstrate its effectiveness in an example.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>  <span class="kw">library</span>(bis557)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="kw">library</span>(tibble)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="kw">library</span>(foreach)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="kw">library</span>(rsample)</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="kw">library</span>(stats)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="kw">data</span>(<span class="st">&quot;iris&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8"></a>dta &lt;-<span class="st"> </span>iris</span>
+<span id="cb3-9"><a href="#cb3-9"></a>irisform &lt;-<span class="st"> </span>Sepal.Length<span class="op">~</span>.</span>
+<span id="cb3-10"><a href="#cb3-10"></a>folds &lt;-<span class="st"> </span>rsample<span class="op">::</span><span class="kw">vfold_cv</span>(iris)</span>
+<span id="cb3-11"><a href="#cb3-11"></a>lambdas &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb3-12"><a href="#cb3-12"></a>predicted &lt;-<span class="st"> </span><span class="kw">my_ridge_xval</span>(irisform,dta,lambdas,folds)</span>
+<span id="cb3-13"><a href="#cb3-13"></a></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#Now I will plot several values of lambda and find the mean squared loss</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a></span>
+<span id="cb3-16"><a href="#cb3-16"></a>Y &lt;-<span class="st"> </span><span class="kw">as.character</span>(irisform)[<span class="dv">2</span>]</span>
+<span id="cb3-17"><a href="#cb3-17"></a>    meansq_vec &lt;-</span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="st">      </span>foreach<span class="op">::</span><span class="st">`</span><span class="dt">%do%</span><span class="st">`</span>(foreach<span class="op">::</span><span class="kw">foreach</span>(<span class="dt">i =</span> <span class="kw">seq_along</span>(lambdas), <span class="dt">.combine =</span> c),</span>
+<span id="cb3-19"><a href="#cb3-19"></a>                                  {foreach<span class="op">::</span><span class="st">`</span><span class="dt">%do%</span><span class="st">`</span>(</span>
+<span id="cb3-20"><a href="#cb3-20"></a>        foreach<span class="op">::</span><span class="kw">foreach</span>(<span class="dt">fold =</span> folds<span class="op">$</span>splits, <span class="dt">.combine =</span> c)</span>
+<span id="cb3-21"><a href="#cb3-21"></a>        , {</span>
+<span id="cb3-22"><a href="#cb3-22"></a>          <span class="co">#these two lines below will give us the loss from each fold at lambda_i</span></span>
+<span id="cb3-23"><a href="#cb3-23"></a>          fit &lt;-<span class="st"> </span>bis557<span class="op">::</span><span class="kw">my_ridge</span>(irisform, rsample<span class="op">::</span><span class="kw">analysis</span>(fold),lambdas[i])</span>
+<span id="cb3-24"><a href="#cb3-24"></a>          difference &lt;-<span class="st"> </span><span class="kw">as.vector</span>(<span class="kw">matrix</span>(rsample<span class="op">::</span><span class="kw">assessment</span>(fold)[,Y],<span class="dt">ncol=</span><span class="dv">1</span>)) <span class="op">-</span></span>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="st">            </span><span class="kw">as.vector</span>(</span>
+<span id="cb3-26"><a href="#cb3-26"></a>              bis557<span class="op">::</span><span class="kw">predict_ridge</span>(fit, rsample<span class="op">::</span><span class="kw">assessment</span>(fold)))</span>
+<span id="cb3-27"><a href="#cb3-27"></a>    })</span>
+<span id="cb3-28"><a href="#cb3-28"></a>    diffsq &lt;-<span class="st"> </span>difference<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb3-29"><a href="#cb3-29"></a>    <span class="kw">mean</span>(diffsq)</span>
+<span id="cb3-30"><a href="#cb3-30"></a>  })</span>
+<span id="cb3-31"><a href="#cb3-31"></a>    </span>
+<span id="cb3-32"><a href="#cb3-32"></a></span>
+<span id="cb3-33"><a href="#cb3-33"></a>candidates &lt;-<span class="st"> </span><span class="kw">cbind.data.frame</span>(lambdas,meansq_vec)</span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="kw">plot</span>(candidates)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2"></a>predicted</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt; [1] 12.6</span></span></code></pre></div>
+<p>One can clearly see that the lambda that minimizes mean squared error in this plot is similar to the one predicted by the function.</p>
+</div>
+</div>
+<div id="problem-5" class="section level1">
+<h1>Problem 5</h1>
+<div id="consider-the-lasso-penalty" class="section level3">
+<h3>Consider the LASSO penalty</h3>
+<p><span class="math display">\[
+\frac{1}{2n} ||Y - X \beta||_2^2 + \lambda ||\beta||_1.
+\]</span></p>
+</div>
+<div id="show-that-if-x_jty-leq-n-lambda-then-widehat-betatextlasso-must-be-zero." class="section level3">
+<h3>Show that if <span class="math inline">\(|X_j^TY| \leq n \lambda\)</span>, then <span class="math inline">\(\widehat \beta^{\text{LASSO}}\)</span> must be zero.</h3>
+<p>I will prove this by contradiction. Suppose <span class="math inline">\(|X_j^TY| \leq n \lambda\)</span> and <span class="math inline">\(\hat{\beta_j}^{LASSO} \neq 0\)</span>. We know <span class="math inline">\(\lambda &gt; 0\)</span> by definition of the LASSO penalty. First, we consider the <span class="math inline">\(j\)</span>th element of the gradient of the LASSO penalty: <span class="math display">\[
+\frac{1}{n}(\beta_j-X^T_jY) + \{\nabla \lambda||\beta|| \}_j
+= \frac{1}{n}\beta_j - \frac{1}{n}X^T_jy \pm \lambda
+\]</span></p>
+<p>Thus we can write the first order condition for <span class="math inline">\(\hat{\beta}_j^{LASSO}\)</span> as follows:</p>
+<p><span class="math display">\[
+\frac{1}{n}\hat{\beta_j}^{LASSO}-\frac{1}{n}X^T_jy \pm \lambda = 0
+\]</span></p>
+<p>Consider two cases: 1. <span class="math inline">\(\hat{\beta}_j^{LASSO} &gt; 0\)</span>: Then, we have the following first-order condition: <span class="math display">\[
+\frac{1}{n}\hat{\beta_j}^{LASSO}- \frac{1}{n}X^T_jy + \lambda = 0
+\]</span> So <span class="math display">\[
+\hat{\beta_j}^{LASSO} = X^T_jy - n \lambda 
+\]</span> Since <span class="math inline">\(X^T_jY \leq n\lambda\)</span>, the right hand side of this equation must be less than or equal to zero. Since in this case we are forcing <span class="math inline">\(\beta_j\)</span> to be strictly greater than zero, we reach a contradiction.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><span class="math inline">\(\hat{\beta}_j^{LASSO} &lt; 0\)</span>: Then, we have the following first-order condition: <span class="math display">\[
+\frac{1}{n}\hat{\beta_j}^{LASSO} - \frac{1}{n}X^T_jy - \lambda = 0
+\]</span> So <span class="math display">\[
+\hat{\beta_j}^{LASSO} = X^T_jy + n \lambda 
+\]</span> Since <span class="math inline">\(X^T_jY \leq n\lambda\)</span>, the right hand side of this equation must be greater than or equal to zero. Since in this case we are forcing <span class="math inline">\(\beta_j\)</span> to be strictly less than zero, we reach a contradiction.</li>
+</ol>
+<p>With cases 1 and 2 taken together, we force <span class="math inline">\(\hat{\beta_j}^{LASSO}=0.\)</span></p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
