@@ -9,6 +9,8 @@ my_ridge(f, d, lambda)
 \arguments{
 \item{f}{a formula the data will be fit too}
 
+\item{d}{the data frame used to fit the model}
+
 \item{lambda}{the adjustment/"penalty" parameter}
 }
 \description{

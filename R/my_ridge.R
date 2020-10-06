@@ -1,6 +1,7 @@
 #' @title Ridge regression for collinear/near-collinear columns
 #' @description This function fits a ridge regression model, accounting for collinear/near collinear columns.
 #' @param f a formula the data will be fit too
+#' @param d the data frame used to fit the model
 #' @param lambda the adjustment/"penalty" parameter
 #' @export
 #' @examples

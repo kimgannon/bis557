@@ -8,7 +8,7 @@
 #' irisdf <- as.data.frame(iris)
 #' irissamdf <- irisdf[sample(nrow(irisdf), 0.2*nrow(irisdf)), ]
 #' irisform <- Sepal.Length ~.
-#' obj <- my_ridge(irisform, iris, 0.0001, 100000)
+#' obj <- my_ridge(irisform, irissamdf, 0.02)
 #' predict_ridge(obj, irisdf)
 
 
