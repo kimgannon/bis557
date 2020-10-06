@@ -30,4 +30,7 @@ Imports:
     stats,
     utils,
     tibble,
-    usethis
+    usethis,
+    foreach,
+    doParallel,
+    rsample
