@@ -20,5 +20,5 @@ The development version of the packages can be installed from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("kaneplusplus/bis557")
+devtools::install_github("kimgannon/bis557")
 ```
