@@ -6,5 +6,17 @@
 #' @examples
 #' data("iris")
 #' irisform <- Sepal.Length ~.
-#' lm_graddescent_xval(irisform, iris, .01)
+#' my_ridge(irisform, iris, .02)
 
+my_ridge <- function(f, d, lambda) {
+  mms <- make_model_matrices (f, d)
+  X <- mms$X
+  Y <- mms$Y
+  svd_x <- svd(X)
+  Sigma <- diag(svd_x$d)
+  lambda_I <- diag(rep(lambda, length(svd_x$d)))
+  beta <- svd_x$v %*% solve(Sigma^2 + lambda_I) %*% Sigma %*% t(svd_x$u) %*% Y
+  ret <- list(coefficients = beta, form = f)
+  class(ret) <- "my_ridge"
+  ret
+}
