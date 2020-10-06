@@ -1,0 +1,113 @@
+---
+title: "Homework 2 vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Homework 2 vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bis557)
+library(ggplot2)
+```
+
+This vignette contains the answers from BIS 557 HW2.
+
+# Problem 1
+
+### Consider the simple regression model with only a scalar $x$ and an intercept
+
+### $$y=\beta_0+\beta_1\cdot x$$
+
+### Using the explicit formula for the inverse of a 2 by 2 matrix, write down the least squares estimators for $\hat{\beta_0}$ and $\hat{\beta_1}$.
+
+
+Let $X$ be the following 1 by p matrix:
+$$ \begin{bmatrix} x_{1,1} & x_{1,2} \\ x_{2,1} & x_{2,2}\\ ... & ... \\ x_{1,n} & x_{2,n} \end{bmatrix} $$
+Then, we can obtain $X^TX$:
+
+$$\begin{bmatrix}
+\Sigma_{i=1}^n x_{i,1}^2 & \Sigma_{i=1}^n x_{i,1}x_{i,2}\\
+\Sigma_{i=1}^n x_{i,2}x_{i,1} &
+\Sigma_{i=1}^n x_{i,2}^2
+\end{bmatrix}$$
+
+Call the elements of this matrix $a,b,c,d$ respectively, as follows. We will back substitute later:
+$$ \begin{bmatrix}
+a & b\\
+c & d
+\end{bmatrix} $$
+
+Then, we invert:
+
+$$ (X^TX)^{-1} = \frac{1}{ad-bc}\begin{bmatrix} d & -b\\-c & a \end{bmatrix} $$
+
+Then we multiply by $X^Ty$:
+$$ \begin{bmatrix}
+\frac{d}{ad-bc} & \frac{-b}{ad-bc}\\
+\frac{-c}{ad-bc} & \frac{a}{ad-bc}
+\end{bmatrix}  \cdot
+\begin{bmatrix}
+\sum_{i=1}^n x_{1,i}y_{i}\\
+\sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} $$
+
+$$ \begin{bmatrix}
+\frac{d-b}{ad-bc}\cdot \sum_{i=1}^n x_{1,i}y_{i}\\
+\frac{a-c}{ad-bc}\cdot \sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} $$
+Back-substituting, we find
+$$ \begin{bmatrix}
+\hat{\beta_1} \\ \hat{\beta_2}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{\Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2}}{\Sigma_{i=1}^n x_{i,1}^2 \cdot \Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2}\cdot \Sigma_{i=1}^n x_{i,2}x_{i,1}}\cdot \sum_{i=1}^n x_{1,i}y_{i}\\
+\frac{\Sigma_{i=1}^n x_{i,1}^2-\Sigma_{i=1}^n x_{i,2}x_{i,1}}{\Sigma_{i=1}^n x_{i,1}^2\cdot \Sigma_{i=1}^n x_{i,2}^2-\Sigma_{i=1}^n x_{i,1}x_{i,2} \cdot \Sigma_{i=1}^n x_{i,2}x_{i,1}}\cdot \sum_{i=1}^n x_{2,i}y_{i}
+\end{bmatrix} $$
+
+# Problem 2
+### Implement a new function fitting the OLS model using gradient descent that calculates the penalty based on the out-of-sample accuracy. Create test code. How does it compare to the OLS model?
+
+This problem is solved in the lm_graddescent_xval function, with accompanying test code. Now, we compare the output for this function with a similar cross-validation for lm, using the iris dataset and the formula Sepal.Length~. :
+
+```{r}
+  irisform <- Sepal.Length~.
+  folds <- rsample::vfold_cv(iris)
+  
+  os_resids_gd <- bis557::lm_graddescent_xval(irisform, iris, 0.0001, 100000, flds=folds)
+
+
+  #lm resids
+  Y <- as.character(irisform)[2]
+  os_resids_lm <- foreach::`%do%`(
+    foreach::foreach(fold = folds$splits, .combine = c)
+  , {
+    #these two lines below will give us the loss from each fold
+    fit <- stats::lm(irisform, rsample::analysis(fold))
+    as.vector(matrix(rsample::assessment(fold)[,Y],ncol=1)) -
+                as.vector(
+                  stats::predict(fit, rsample::assessment(fold)))
+    
+  } )
+  index <- seq(1:length(os_resids_gd))
+  df <- cbind.data.frame(index, os_resids_gd, os_resids_lm)
+  
+ggplot(df, aes(x=index, y=os_resids_gd)) + geom_point() + xlab("Iteration") +ylab("Residuals")  + 
+  geom_point(data=df, aes(x=index, y=os_resids_lm, colour="#000099"))
+
+```
+
+One can easily see from this plot that the residuals, on average, look more or less the same, which we expect.
+
+# Problem 3
+### Implement a ridge regression function taking into account colinear (or nearly colinear) regression variables. Create test code for it. Show that it works.
+

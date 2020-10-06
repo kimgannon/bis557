@@ -28,15 +28,11 @@ lm_graddescent <- function(f, d, gamma, n, contrasts=NULL) {
   beta_names <- rownames(beta)
   beta <- as.numeric(beta)
 
-  #handling collinearity in SVD output for computationally equivalent values
-#  for (i in 1:length(beta)) {
-#    if (abs(beta[i]) <= .000000001) {
-#      beta[i] = NA
-#    }
-#  }
-
   names(beta) <- beta_names
-  ret <- list(coefficients = beta)
+  ret <- list(coefficients = beta, form = f)
+  class(ret) <- "lm_graddescent"
   ret
 }
+
+
 
