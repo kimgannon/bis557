@@ -33,4 +33,5 @@ Imports:
     usethis,
     foreach,
     doParallel,
-    rsample
+    rsample,
+    random
